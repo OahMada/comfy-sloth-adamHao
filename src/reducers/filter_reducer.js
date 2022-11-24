@@ -1,3 +1,5 @@
+import { FaAcquisitionsIncorporated } from 'react-icons/fa';
+import { GiStarSattelites } from 'react-icons/gi';
 import {
 	LOAD_PRODUCTS,
 	SET_LISTVIEW,
@@ -11,11 +13,22 @@ import {
 
 const filter_reducer = (state, action) => {
 	if (action.type === LOAD_PRODUCTS) {
+		let maxPrice = action.payload.reduce((acc, cur) => {
+			if (cur.price > acc) {
+				acc = cur.price;
+			}
+			return acc;
+		}, 0);
 		return {
 			...state,
 			all_products: [...action.payload],
 			filtered_products: [...action.payload],
-			// loading: false
+			load_products_loading: false,
+			filters: {
+				...state.filters,
+				max_price: maxPrice,
+				price: maxPrice,
+			},
 		};
 	}
 	if (action.type === SET_GRIDVIEW) {
@@ -29,15 +42,16 @@ const filter_reducer = (state, action) => {
 	}
 	if (action.type === SORT_PRODUCTS) {
 		let { sort, filtered_products } = state;
+		let tempProducts = [...filtered_products];
 		// 349 do we need a copy of filtered_products?
 		if (sort === 'price-lowest') {
-			filtered_products.sort((a, b) => a.price - b.price);
+			tempProducts.sort((a, b) => a.price - b.price);
 		}
 		if (sort === 'price-highest') {
-			filtered_products.sort((a, b) => b.price - a.price);
+			tempProducts.sort((a, b) => b.price - a.price);
 		}
 		if (sort === 'name-a') {
-			filtered_products.sort((a, b) => {
+			tempProducts.sort((a, b) => {
 				// if (a.name > b.name) {
 				// 	return 1;
 				// }
@@ -49,7 +63,7 @@ const filter_reducer = (state, action) => {
 			});
 		}
 		if (sort === 'name-z') {
-			filtered_products.sort((a, b) => {
+			tempProducts.sort((a, b) => {
 				// if (a.name > b.name) {
 				// 	return -1;
 				// }
@@ -60,7 +74,55 @@ const filter_reducer = (state, action) => {
 				return b.name.localeCompare(a.name);
 			});
 		}
-		return { ...state };
+		return { ...state, filtered_products: tempProducts };
+	}
+	if (action.type === UPDATE_FILTERS) {
+		return {
+			...state,
+			filters: { ...state.filters, [action.payload.name]: action.payload.value },
+		};
+	}
+	if (action.type === FILTER_PRODUCTS) {
+		let {
+			all_products,
+			filters: { text, category, company, color, price, shipping },
+		} = state;
+		let filtered_products = [...all_products];
+		if (text) {
+			filtered_products = filtered_products.filter((product) => {
+				return product.name.toLowerCase().includes(text);
+			});
+		}
+		if (category !== 'all') {
+			filtered_products = filtered_products.filter((product) => product.category === category);
+		}
+		if (company !== 'all') {
+			filtered_products = filtered_products.filter((product) => product.company === company);
+		}
+		if (color !== 'all') {
+			filtered_products = filtered_products.filter((product) => product.colors.includes(color));
+		}
+		filtered_products = filtered_products.filter((product) => product.price <= price);
+		if (shipping) {
+			filtered_products = filtered_products.filter((product) => product.shipping);
+		}
+
+		return { ...state, filtered_products };
+	}
+
+	if (action.type === CLEAR_FILTERS) {
+		return {
+			...state,
+			filters: {
+				...state.filters,
+				text: '',
+				company: 'all',
+				category: 'all',
+				color: 'all',
+				price: state.filters.max_price,
+				shipping: false,
+			},
+		};
 	}
 	throw new Error(`No Matching "${action.type}" - action type`);
 };

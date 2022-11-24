@@ -9,6 +9,7 @@ import CartButtons from './CartButtons';
 const AddToCart = ({ product }) => {
 	let { id, stock, colors } = product;
 
+	var { addToCart } = useCartContext();
 	let [colorIndex, setColorIndex] = useState(0);
 	let [amount, setAmount] = useState(1);
 
@@ -51,8 +52,11 @@ const AddToCart = ({ product }) => {
 			</div>
 			<div className='btn-container'>
 				<AmountButtons amount={amount} increase={increase} decrease={decrease} />
-				<Link to='/cart' className='btn'>
+				<button className='btn' type='button' onClick={() => addToCart(id, colors[colorIndex], amount, product)}>
 					add to cart
+				</button>
+				<Link to='/cart' className='btn'>
+					check cart
 				</Link>
 			</div>
 		</Wrapper>

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import products_reducer from '../reducers/products_reducer';
 const Sort = () => {
 	var { filtered_products: products, grid_view, setGridView, setListView, sort, updateSort } = useFilterContext();
+	console.log(products);
 	return (
 		<Wrapper>
 			<div className='btn-container'>

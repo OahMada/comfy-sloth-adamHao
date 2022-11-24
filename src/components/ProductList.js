@@ -5,17 +5,12 @@ import ListView from './ListView';
 import Loading from './Loading';
 
 const ProductList = () => {
-	var {
-		filtered_products: products,
-		grid_view,
-		// loading
-	} = useFilterContext();
+	var { filtered_products: products, grid_view, load_products_loading } = useFilterContext();
 
-	// if (loading) {
-	// 	return <Loading />;
-	// }
-	// if (products.length < 1 && !loading) {
-	if (products.length < 1) {
+	if (load_products_loading) {
+		return <Loading />;
+	}
+	if (products.length < 1 && !load_products_loading) {
 		return <h5 style={{ textTransform: 'none' }}>Sorry, no products matched your search</h5>;
 	}
 	if (!grid_view) {

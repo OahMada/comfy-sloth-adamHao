@@ -6,12 +6,14 @@ import { FaTimes } from 'react-icons/fa';
 import { links } from '../utils/constants';
 import styled from 'styled-components';
 import CartButtons from './CartButtons';
-import { useUserContext } from '../context/user_context';
+// import { useUserContext } from '../context/user_context';
+// import { useAuth0 } from '@auth0/auth0-react';
 
 const Sidebar = () => {
 	var { closeSidebar, isSidebarOpen } = useProductsContext();
+	// var { myUser } = useUserContext();
+	// var { user } = useAuth0();
 
-	var isOpen = true;
 	return (
 		<SidebarContainer>
 			<aside className={`sidebar ${isSidebarOpen && 'show-sidebar'}`}>
@@ -32,11 +34,13 @@ const Sidebar = () => {
 							</li>
 						);
 					})}
-					<li>
-						<Link to='/checkout' onClick={closeSidebar}>
-							checkout
-						</Link>
-					</li>
+					{/* {user && (
+						<li>
+							<Link to='/checkout' onClick={closeSidebar}>
+								checkout
+							</Link>
+						</li>
+					)} */}
 				</ul>
 				<CartButtons />
 			</aside>
