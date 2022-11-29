@@ -13,8 +13,8 @@ const Filters = () => {
 	} = useFilterContext();
 
 	var categories = getUniqueValues(all_products, 'category');
-	var companies = getUniqueValues(all_products, 'company');
 	var colors = getUniqueValues(all_products, 'colors');
+	let companiesArray = Array.from(company.keys()); // generate companies array to map on
 
 	return (
 		<Wrapper>
@@ -51,7 +51,7 @@ const Filters = () => {
 					</div>
 					<div className='form-control'>
 						<h5>company</h5>
-						<select name='company' className='company' value={company} onChange={updateFilters}>
+						{/* <select name='company' className='company' value={company} onChange={updateFilters}>
 							{companies.map((item, index) => {
 								return (
 									<option value={item} key={index}>
@@ -59,7 +59,22 @@ const Filters = () => {
 									</option>
 								);
 							})}
-						</select>
+						</select> */}
+						{companiesArray.map((item, index) => {
+							return (
+								<div className='form-control shipping' key={index}>
+									<input
+										type='checkbox'
+										name='company'
+										value={item}
+										onChange={updateFilters}
+										id={item}
+										checked={company.get(item)} // access company map entry value
+									/>
+									<label htmlFor={item}>{item}</label>
+								</div>
+							);
+						})}
 					</div>
 					<div className='form-control'>
 						<h5>colors</h5>

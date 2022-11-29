@@ -7,5 +7,19 @@ import Checkout from './CheckoutPage';
 import Error from './ErrorPage';
 import PrivateRoute from './PrivateRoute';
 import AuthWrapper from './AuthWrapper';
+import StripeWrapper from './StripeWrapper';
+import PaymentCompletePage from './PaymentCompletePage';
 
-export { Home, About, Products, SingleProduct, Cart, Checkout, Error, PrivateRoute, AuthWrapper };
+export {
+	Home,
+	About,
+	Products,
+	SingleProduct,
+	Cart,
+	Checkout,
+	Error,
+	PrivateRoute,
+	AuthWrapper,
+	StripeWrapper,
+	PaymentCompletePage,
+};

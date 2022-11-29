@@ -5,7 +5,7 @@ import ListView from './ListView';
 import Loading from './Loading';
 
 const ProductList = () => {
-	var { filtered_products: products, grid_view, load_products_loading } = useFilterContext();
+	var { paginated_products: products, grid_view, load_products_loading } = useFilterContext();
 
 	if (load_products_loading) {
 		return <Loading />;

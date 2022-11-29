@@ -1,23 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { PageHero, StripeCheckout } from '../components';
+import { PageHero, StripeCheckoutForm } from '../components';
 // extra imports
-// import { useCartContext } from '../context/cart_context';
-// import { Navigate } from 'react-router-dom';
+import { useCartContext } from '../context/cart_context';
+import { Navigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
-	// let { cart } = useCartContext();
-	// const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
+	let { cart } = useCartContext();
 
-	// if (!clientSecret) {
-	// 	return <Navigate to='/' />;
-	// }
 	return (
 		<main>
 			<PageHero title='checkout' />
 			<Wrapper className='page'>
 				{/* {cart.length < 1 ? <Navigate to='/' /> :  */}
-				<StripeCheckout />
+				<StripeCheckoutForm />
 				{/* } */}
 			</Wrapper>
 		</main>

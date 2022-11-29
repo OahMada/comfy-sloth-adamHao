@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Product from './Product';
+import Pagination from './Pagination';
 
 const GridView = ({ products }) => {
 	return (
@@ -10,6 +11,7 @@ const GridView = ({ products }) => {
 					return <Product {...product} key={product.id} />;
 				})}
 			</div>
+			<Pagination />
 		</Wrapper>
 	);
 };

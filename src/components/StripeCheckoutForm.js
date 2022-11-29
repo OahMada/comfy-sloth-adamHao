@@ -1,57 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import styled from 'styled-components';
-import { loadStripe } from '@stripe/stripe-js';
-import { PaymentElement, useStripe, Elements, useElements } from '@stripe/react-stripe-js';
-import axios from 'axios';
-import { useCartContext } from '../context/cart_context';
-// import { useUserContext } from '../context/user_context';
 import { useAuth0 } from '@auth0/auth0-react';
 import { formatPrice } from '../utils/helpers';
-// import { Navigate } from 'react-router-dom';
+import { useCartContext } from '../context/cart_context';
 
-var promise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
-
-const CheckoutForm = () => {
-	let { clearCart } = useCartContext();
-
+const StripeCheckoutForm = () => {
 	let [message, setMessage] = useState(null);
 	let [isLoading, setIsLoading] = useState(false);
 
 	let stripe = useStripe();
 	let elements = useElements();
 
+	let { total_amount, shipping_fee, clearCart } = useCartContext();
+	let { user } = useAuth0();
+
 	let paymentElementOptions = {
 		layout: 'tabs',
 	};
-
-	useEffect(() => {
-		if (!stripe) {
-			return;
-		}
-
-		const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
-
-		if (!clientSecret) {
-			return;
-		}
-
-		stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-			switch (paymentIntent.status) {
-				case 'succeeded':
-					setMessage('Payment succeeded!');
-					break;
-				case 'processing':
-					setMessage('Your payment is processing.');
-					break;
-				case 'requires_payment_method':
-					setMessage('Your payment was not successful, please try again.');
-					break;
-				default:
-					setMessage('Something went wrong.');
-					break;
-			}
-		});
-	}, [stripe]);
 
 	let handleSubmit = async (event) => {
 		event.preventDefault();
@@ -65,7 +31,7 @@ const CheckoutForm = () => {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: 'http://localhost:8888/checkout',
+				return_url: 'http://localhost:8888/payment-complete',
 			},
 		});
 
@@ -76,64 +42,23 @@ const CheckoutForm = () => {
 		}
 
 		setIsLoading(false);
-		// clearCart();
 	};
-
-	return (
-		<form id='payment-form' onSubmit={handleSubmit}>
-			<PaymentElement id='payment-element' options={paymentElementOptions} />
-			<button disabled={isLoading || !stripe || !elements} id='submit'>
-				<span id='button-text'>{isLoading ? <div className='spinner' id='spinner'></div> : 'Pay now'}</span>
-			</button>
-			{/* Show any error or success messages */}
-			{message && <div id='payment-message'>{message}</div>}
-		</form>
-	);
-};
-
-const StripeCheckout = () => {
-	let { cart, total_amount, shipping_fee } = useCartContext();
-	let [clientSecret, setClientSecret] = useState('');
-	let { user } = useAuth0();
-
-	let appearance = {
-		theme: 'stripe',
-	};
-	let options = {
-		clientSecret,
-		appearance,
-	};
-
-	useEffect(() => {
-		let createPaymentIntent = async () => {
-			if (cart.length > 0) {
-				let { data } = await axios.post(
-					'/.netlify/functions/create-payment-intent',
-					JSON.stringify({ cart, total_amount, shipping_fee })
-				);
-				setClientSecret(data.clientSecret);
-			}
-		};
-		createPaymentIntent();
-	}, [cart, total_amount, shipping_fee]);
 
 	return (
 		<Wrapper>
-			<div className=''></div>
-			{cart.length > 0 ? (
-				<article>
-					<h4>Hello, {user && user.name}</h4>
-					<p>Your total is {formatPrice(shipping_fee + total_amount)}</p>
-					<p>Test Card Number : 4242 4242 4242 4242</p>
-				</article>
-			) : (
-				<h4>Your cart is empty</h4>
-			)}
-			{clientSecret && (
-				<Elements options={options} stripe={promise}>
-					<CheckoutForm />
-				</Elements>
-			)}
+			<article>
+				<h4>Hello, {user && user.name}</h4>
+				<p>Your total is {formatPrice(shipping_fee + total_amount)}</p>
+				<p>Test Card Number : 4242 4242 4242 4242</p>
+			</article>
+			<form id='payment-form' onSubmit={handleSubmit}>
+				<PaymentElement id='payment-element' options={paymentElementOptions} />
+				<button disabled={isLoading || !stripe || !elements} id='submit'>
+					<span id='button-text'>{isLoading ? <div className='spinner' id='spinner'></div> : 'Pay now'}</span>
+				</button>
+				{/* Show any error or success messages */}
+				{message && <div id='payment-message'>{message}</div>}
+			</form>
 		</Wrapper>
 	);
 };
@@ -259,4 +184,4 @@ const Wrapper = styled.section`
 	}
 `;
 
-export default StripeCheckout;
+export default StripeCheckoutForm;
