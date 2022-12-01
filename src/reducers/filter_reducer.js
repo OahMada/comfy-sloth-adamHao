@@ -38,26 +38,16 @@ const filter_reducer = (state, action) => {
 		};
 	}
 	if (action.type === SET_GRIDVIEW) {
-		// let { first_on_page, filtered_products, products_per_page } = state;
-
-		// let paginated_products = filtered_products.slice(first_on_page, first_on_page + products_per_page);
 		return {
 			...state,
 			grid_view: true,
-			// page_number: 1
-			// paginated_products,
 			products_per_page: 9,
 		};
 	}
 	if (action.type === SET_LISTVIEW) {
-		// let { first_on_page, filtered_products, products_per_page } = state;
-
-		// let paginated_products = filtered_products.slice(first_on_page, first_on_page + products_per_page);
 		return {
 			...state,
 			grid_view: false,
-			// page_number: 1
-			// paginated_products,
 			products_per_page: 6,
 		};
 	}

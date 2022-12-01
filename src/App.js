@@ -56,11 +56,11 @@ function App() {
 export default App;
 
 // TODO
-// more advanced pagination? when change display mode, always make sure the first product stays same
 // redirect user to the same page course 380
 // stripe setup
 
 // DONE
+// more advanced pagination? when change display mode, always make sure the first product stays same
 // Compony checkbox filter course 359
 // steps:
 // 1, populate initial company state when load products
